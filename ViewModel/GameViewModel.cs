@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using WordleClone.Model;
+using WordleClone.Services;
 
 namespace WordleClone.ViewModel
 {
@@ -11,6 +12,8 @@ namespace WordleClone.ViewModel
         private char[] correctAnswer;
         private int rowIndex;
         private int columnIndex;
+
+        private readonly SolutionGeneratorService _service = new SolutionGeneratorService();
 
         public char[] firstKeyboardRow { get; }
         public char[] secondKeyboardRow { get; }
@@ -28,7 +31,9 @@ namespace WordleClone.ViewModel
                 new Row()
             };
 
-            correctAnswer = "bagel".ToUpper().ToCharArray(); // new char[5]
+            Task<string> randomWord = _service.GenerateSolution();
+
+            correctAnswer = randomWord.Result.ToUpper().ToCharArray(); // new char[5]
             firstKeyboardRow = "QWERTYUIOP".ToCharArray();
             secondKeyboardRow = "ASDFGHJKL".ToCharArray();
             thirdKeyboardRow = "<ZXCVBNM>".ToCharArray();
