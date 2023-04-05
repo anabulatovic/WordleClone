@@ -1,41 +1,83 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="WordleClone.MainPage">
+             x:Class="WordleClone.MainPage"
+             xmlns:viewmodel="clr-namespace:WordleClone.ViewModel"
+             xmlns:model="clr-namespace:WordleClone.Model"
+             x:DataType="viewmodel:GameViewModel"
+             BackgroundColor="{DynamicResource Secondary}">
 
-    <ScrollView>
+    <Grid RowDefinitions="*, Auto"
+          Padding="8, 12, 8, 12">
+        
+        <!---Game board-->
         <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
-
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
-
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
-
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
-
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
-
+            Spacing="8"
+            BindableLayout.ItemsSource="{Binding Rows}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="model:Row">
+                    <HorizontalStackLayout
+                        Spacing="8"
+                        HorizontalOptions="Center"
+                        BindableLayout.ItemsSource="{Binding Letters}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="model:Letter">
+                                <Frame Style="{DynamicResource LetterFrame}"
+                                        BackgroundColor="{Binding Color}">
+                                    <Label Text="{Binding Input}"
+                                           FontSize="36"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+            
         </VerticalStackLayout>
-    </ScrollView>
-
+        
+        <!---Keyboard-->
+        <VerticalStackLayout Grid.Row="1" Spacing="4">
+            <HorizontalStackLayout 
+                        Spacing="2"
+                        HorizontalOptions="Center"
+                        BindableLayout.ItemsSource="{Binding firstKeyboardRow}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Null}">
+                        <Button Style="{DynamicResource LetterButton}"
+                                Text="{Binding .}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:GameViewModel}}, Path=EnterLetterCommand}"
+                                CommandParameter="{Binding .}"/>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout 
+                        Spacing="2"
+                        HorizontalOptions="Center"
+                        BindableLayout.ItemsSource="{Binding secondKeyboardRow}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Null}">
+                        <Button Style="{DynamicResource LetterButton}"
+                                Text="{Binding .}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:GameViewModel}}, Path=EnterLetterCommand}"
+                                CommandParameter="{Binding .}"/>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout 
+                        Spacing="4"
+                        HorizontalOptions="Center"
+                        BindableLayout.ItemsSource="{Binding thirdKeyboardRow}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Null}">
+                        <Button Style="{DynamicResource LetterButton}"
+                                Text="{Binding .}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:GameViewModel}}, Path=EnterLetterCommand}"
+                                CommandParameter="{Binding .}"/>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
