@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Drawing;
 using WordleClone.Model;
 using WordleClone.Services;
 
@@ -13,31 +14,43 @@ namespace WordleClone.ViewModel
         private int rowIndex;
         private int columnIndex;
 
-        private readonly SolutionGeneratorService _service = new SolutionGeneratorService();
+        private SolutionService _solutionService;
 
         public char[] firstKeyboardRow { get; }
         public char[] secondKeyboardRow { get; }
         public char[] thirdKeyboardRow { get; }
 
-        public GameViewModel() 
+        public GameViewModel(SolutionService solutionService)
         {
+            _solutionService = solutionService;
+
+            firstKeyboardRow = "QWERTYUIOP".ToCharArray();
+            secondKeyboardRow = "ASDFGHJKL".ToCharArray();
+            thirdKeyboardRow = "<ZXCVBNM>".ToCharArray();
+
+            InitializeGame();
+        }
+
+        public async void GetSolution()
+        {
+            string word = await _solutionService.GetSolution();
+            correctAnswer = word.ToUpper().ToCharArray();
+        }
+
+        private void InitializeGame()
+        {
+
             rows = new Row[6]
             {
                 new Row(),
                 new Row(),
-                new Row(), 
+                new Row(),
                 new Row(),
                 new Row(),
                 new Row()
             };
 
-            Task<string> randomWord = _service.GenerateSolution();
-
-            correctAnswer = randomWord.Result.ToUpper().ToCharArray(); // new char[5]
-            firstKeyboardRow = "QWERTYUIOP".ToCharArray();
-            secondKeyboardRow = "ASDFGHJKL".ToCharArray();
-            thirdKeyboardRow = "<ZXCVBNM>".ToCharArray();
-
+            GetSolution();
         }
 
         [RelayCommand]
@@ -48,15 +61,41 @@ namespace WordleClone.ViewModel
                 return;
             }
 
-            bool valid = Rows[rowIndex].Validate(correctAnswer);
+            bool isValid = Rows[rowIndex].Validate(correctAnswer);
 
-            if (valid)
+            string word = new string(correctAnswer);
+            
+
+            if (isValid)
             {
+                WordEntry entry = _solutionService.GetDefinition(word).Result;
+                Application.Current.MainPage.DisplayAlert("Congratulations", word + entry.PartOfSpeech + entry.Definition, "Play again", "Cancel");
+                
+                //if (playAgain)
+                //{
+                //    NewGame();
+                //}
+                
+                
             }
             
             if (rowIndex == 5)
             {
-                App.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!", "OK");
+                /*bool playAgain = */
+                WordEntry entry = _solutionService.GetDefinition(word).Result;
+                Application.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!\n" + word + " (" + entry.PartOfSpeech + ")\n"+ entry.Definition, "Play again");//.Result;
+
+                //for (int i = 0; i < rowIndex + 1; i++)
+                //{
+                //    for (int j = 0; j < columnIndex; j++)
+                //    {
+                //        Rows[i].Letters[j].Input = ' ';
+                //        Rows[i].Letters[j].Color = Microsoft.Maui.Graphics.Color.FromUint(0xFF212121);
+                //    }
+
+                //}
+                //NewGame();
+
             }
 
             else
@@ -94,8 +133,24 @@ namespace WordleClone.ViewModel
                 return;
             }
 
-            Rows[rowIndex].Letters[columnIndex].Input= letter;
+            Rows[rowIndex].Letters[columnIndex].Input = letter;
             columnIndex++;
         }
+
+        //private void NewGame()
+        //{
+        //    InitializeGame();
+
+        //    for (int i = 0; i < rowIndex + 1; i++)
+        //    {
+        //        for (int j = 0; j < columnIndex; j++)
+        //        {
+        //            Rows[i].Letters[j].Input = ' ';
+        //            Rows[i].Letters[j].BackgroundColor = Colors.Gray;
+        //        }
+
+        //    }
+
+        //}
     }
 }
