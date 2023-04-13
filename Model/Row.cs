@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WordleClone.Model
+﻿namespace WordleClone.Model
 {
+
     public class Row
     {
         public Row() 
@@ -25,6 +20,7 @@ namespace WordleClone.Model
         public bool Validate(char[] correctAnswer)
         {
             int count = 0;
+            HashSet<int> correctIndices = new HashSet<int>();
 
             for (int i = 0; i < Letters.Length; i++)
             {
@@ -32,15 +28,22 @@ namespace WordleClone.Model
 
                 if (letter.Input == correctAnswer[i])
                 {
-                    letter.Color = Colors.Green;
+                    letter.Color = Color.FromUint(0xff6aaa64);
                     count++;
+                    correctIndices.Add(i);
                 }
-
                 else if (correctAnswer.Contains(letter.Input))
                 {
-                    letter.Color = Colors.Yellow;
+                    int index = Array.IndexOf(correctAnswer, letter.Input);
+                    if (index != i && !correctIndices.Contains(index))
+                    {
+                        letter.Color = Color.FromUint(0xffc9b458);
+                    }
+                    else
+                    {
+                        letter.Color = Colors.Gray;
+                    }
                 }
-
                 else
                 {
                     letter.Color = Colors.Gray;
@@ -48,8 +51,8 @@ namespace WordleClone.Model
             }
 
             return count == 5;
-
         }
+
 
     }
 }
