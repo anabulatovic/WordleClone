@@ -24,6 +24,5 @@ namespace WordleClone.Model
 
         [ObservableProperty]
         private Color color;
-        //public 
     }
 }
