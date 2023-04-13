@@ -32,18 +32,32 @@
                     count++;
                     correctIndices.Add(i);
                 }
+
                 else if (correctAnswer.Contains(letter.Input))
                 {
-                    int index = Array.IndexOf(correctAnswer, letter.Input);
-                    if (index != i && !correctIndices.Contains(index))
+                    int index = -1;
+
+                    for (int j = i + 1; j < correctAnswer.Length; j++)
+                    {
+                        if (correctAnswer[j] == letter.Input && !correctIndices.Contains(j))
+                        {
+                            index = j;
+                            break;
+                        }
+                    }
+
+                    if (index != -1)
                     {
                         letter.Color = Color.FromUint(0xffc9b458);
+                        correctIndices.Add(index);
                     }
+
                     else
                     {
                         letter.Color = Colors.Gray;
                     }
                 }
+
                 else
                 {
                     letter.Color = Colors.Gray;
