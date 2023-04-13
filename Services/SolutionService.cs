@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Android.OS;
+using Newtonsoft.Json;
+using WordleClone.Model;
 using static Android.Print.PrintAttributes;
 
 namespace WordleClone.Services
@@ -21,19 +23,21 @@ namespace WordleClone.Services
             return solution;
         }
 
-        public async Task<List<string>> GetDefinition(string word)
+        public async Task<WordEntry> GetDefinition(string word)
         {
-            List<string> definition = new List<string>{ "", "" };
+            dynamic entries = "";
             HttpClient client = new HttpClient();
-            Uri uri = new Uri("https://api.dictionaryapi.dev/api/v2/entries/en/" + "hello");
+            Uri uri = new Uri("https://api.dictionaryapi.dev/api/v2/entries/en/" + word);
             HttpResponseMessage response = client.GetAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
-                definition = JsonConvert.DeserializeObject<List<String>>(content);
+                entries = JsonConvert.DeserializeObject(content) ?? "";
             }
 
-            return definition;
+            WordEntry entry = new WordEntry(Convert.ToString(entries[0].meanings[0].partOfSpeech), Convert.ToString(entries[0].meanings[0].definitions[0].definition));
+
+            return entry;
         }
 
         public async Task<bool> Exists(string input)
