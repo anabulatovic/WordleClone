@@ -1,6 +1,4 @@
-﻿using Android.Icu.Text;
-
-namespace WordleClone.Model
+﻿namespace WordleClone.Model
 {
     public class Row
     {
@@ -65,13 +63,14 @@ namespace WordleClone.Model
                     answerStates[i] = State.Green;
                 }
             }
+
             if (count == length)
             {
                 ColorFields(letterStates);
                 return true;
             }
 
-            for(int i = 0; i < length; i++)
+            for (int i = 0; i < length; i++)
             {
                 if (letterStates[i] != State.Green)
                 {
