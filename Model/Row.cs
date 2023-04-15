@@ -1,8 +1,16 @@
-﻿namespace WordleClone.Model
-{
+﻿using Android.Icu.Text;
 
+namespace WordleClone.Model
+{
     public class Row
     {
+        enum State
+        {
+            Gray = 0, 
+            Yellow = 1, 
+            Green = 2
+        }
+
         public Row() 
         {
             Letters = new Letter[5]
@@ -17,56 +25,71 @@
 
         public Letter[] Letters { get; set; }
 
+        private void ColorFields(State[] letterStates)
+        {
+            int length = letterStates.Length;
+
+            for (int i = 0; i < length; i++)
+            {
+                if (letterStates[i] == State.Gray)
+                {
+                    Letters[i].Color = Colors.Gray;
+                }
+
+                else if (letterStates[i] == State.Yellow)
+                {
+                    Letters[i].Color = Color.FromUint(0xffc9b458);
+                }
+
+                else if (letterStates[i] == State.Green)
+                {
+                    Letters[i].Color = Color.FromUint(0xff6aaa64);
+                }
+                
+            }
+        }
+
         public bool Validate(char[] correctAnswer)
         {
             int count = 0;
-            HashSet<int> correctIndices = new HashSet<int>();
+            State[] letterStates = new State[5] { State.Gray, State.Gray, State.Gray, State.Gray, State.Gray };
+            State[] answerStates = new State[5] { State.Gray, State.Gray, State.Gray, State.Gray, State.Gray };
+            int length = Letters.Length;
 
-            for (int i = 0; i < Letters.Length; i++)
+            for (int i = 0; i < length; i++)
             {
-                Letter letter = Letters[i];
-
-                if (letter.Input == correctAnswer[i])
+                if (Letters[i].Input == correctAnswer[i])
                 {
-                    letter.Color = Color.FromUint(0xff6aaa64);
                     count++;
-                    correctIndices.Add(i);
+                    letterStates[i] = State.Green;
+                    answerStates[i] = State.Green;
                 }
+            }
+            if (count == length)
+            {
+                ColorFields(letterStates);
+                return true;
+            }
 
-                else if (correctAnswer.Contains(letter.Input))
+            for(int i = 0; i < length; i++)
+            {
+                if (letterStates[i] != State.Green)
                 {
-                    int index = -1;
-
-                    for (int j = i + 1; j < correctAnswer.Length; j++)
+                    for (int j = 0; j < length; j++)
                     {
-                        if (correctAnswer[j] == letter.Input && !correctIndices.Contains(j))
+                        if (Letters[i].Input == correctAnswer[j] && answerStates[j] == State.Gray)
                         {
-                            index = j;
+                            letterStates[i] = State.Yellow;
+                            answerStates[j] = State.Yellow;
                             break;
                         }
                     }
-
-                    if (index != -1)
-                    {
-                        letter.Color = Color.FromUint(0xffc9b458);
-                        correctIndices.Add(index);
-                    }
-
-                    else
-                    {
-                        letter.Color = Colors.Gray;
-                    }
-                }
-
-                else
-                {
-                    letter.Color = Colors.Gray;
                 }
             }
 
-            return count == 5;
+            ColorFields(letterStates);
+            return false;
+            
         }
-
-
     }
 }
