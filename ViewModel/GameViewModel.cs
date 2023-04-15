@@ -83,11 +83,19 @@ namespace WordleClone.ViewModel
 
                 string word = new string(correctAnswer);
 
-
                 if (isValid)
                 {
-                    WordEntry entry = _solutionService.GetDefinition(word).Result;
-                    await Application.Current.MainPage.DisplayAlert("Congratulations", word + " (" + entry.PartOfSpeech + ")\n" + entry.Definition, "Play again", "Cancel");
+                    try
+                    {
+                        WordEntry entry = _solutionService.GetDefinition(word).Result;
+                        await Application.Current.MainPage.DisplayAlert("Congratulations", word + " (" + entry.PartOfSpeech + ")\n" + entry.Definition, "Play again", "Cancel");
+                    }
+
+                    catch 
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Congratulations", word + "\nWe currently do not have a definition for this word.", "OK");
+                    }
+                    
 
                     NewGame();
 
@@ -95,8 +103,17 @@ namespace WordleClone.ViewModel
 
                 else if (rowIndex == 5)
                 {
-                    WordEntry entry = _solutionService.GetDefinition(word).Result;
-                    await Application.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!\n" + word + " (" + entry.PartOfSpeech + ")\n" + entry.Definition, "Play again");
+                    try
+                    {
+                        WordEntry entry = _solutionService.GetDefinition(word).Result;
+                        await Application.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!\n" + word + " (" + entry.PartOfSpeech + ")\n" + entry.Definition, "Play again");
+                    }
+
+                    catch
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!\n" + word + "\nWe currently do not have a definition for this word.", "OK");
+                    }
+                    
                     NewGame();
                 }
 
@@ -106,9 +123,6 @@ namespace WordleClone.ViewModel
                     columnIndex = 0;
                 }
             }
-
-            
-     
         }
 
         [RelayCommand]
