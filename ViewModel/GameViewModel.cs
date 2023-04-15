@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Drawing;
 using WordleClone.Model;
 using WordleClone.Services;
 
@@ -26,7 +25,7 @@ namespace WordleClone.ViewModel
 
             firstKeyboardRow = "QWERTYUIOP".ToCharArray();
             secondKeyboardRow = "ASDFGHJKL".ToCharArray();
-            thirdKeyboardRow = "<ZXCVBNM>".ToCharArray();
+            thirdKeyboardRow = "⌫ZXCVBNM↵".ToCharArray();
 
             InitializeGame();
         }
@@ -54,68 +53,74 @@ namespace WordleClone.ViewModel
         }
 
         [RelayCommand]
-        public void Enter()
+        public async void Enter()
         {
+
             if (columnIndex != 5)
             {
                 return;
             }
 
-            bool isValid = Rows[rowIndex].Validate(correctAnswer);
+            char[] input = new char[5];
 
-            string word = new string(correctAnswer);
-            
-
-            if (isValid)
+            for (int i = 0; i < 5; i++)
             {
-                WordEntry entry = _solutionService.GetDefinition(word).Result;
-                Application.Current.MainPage.DisplayAlert("Congratulations", word + entry.PartOfSpeech + entry.Definition, "Play again", "Cancel");
-                
-                //if (playAgain)
-                //{
-                //    NewGame();
-                //}
-                
-                
+                input[i] = Rows[rowIndex].Letters[i].Input;
             }
             
-            if (rowIndex == 5)
+            string inputWord = new string(input);
+            bool exists = _solutionService.Exists(inputWord).Result;
+
+            if (!exists)
             {
-                /*bool playAgain = */
-                WordEntry entry = _solutionService.GetDefinition(word).Result;
-                Application.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!\n" + word + " (" + entry.PartOfSpeech + ")\n"+ entry.Definition, "Play again");//.Result;
-
-                //for (int i = 0; i < rowIndex + 1; i++)
-                //{
-                //    for (int j = 0; j < columnIndex; j++)
-                //    {
-                //        Rows[i].Letters[j].Input = ' ';
-                //        Rows[i].Letters[j].Color = Microsoft.Maui.Graphics.Color.FromUint(0xFF212121);
-                //    }
-
-                //}
-                //NewGame();
-
+                await Application.Current.MainPage.DisplayAlert("Error", "Input must be a valid word", "OK");
+                return;
             }
 
             else
             {
-                rowIndex++;
-                columnIndex = 0;
+                bool isValid = Rows[rowIndex].Validate(correctAnswer);
+
+                string word = new string(correctAnswer);
+
+
+                if (isValid)
+                {
+                    WordEntry entry = _solutionService.GetDefinition(word).Result;
+                    await Application.Current.MainPage.DisplayAlert("Congratulations", word + " (" + entry.PartOfSpeech + ")\n" + entry.Definition, "Play again", "Cancel");
+
+                    NewGame();
+
+                }
+
+                else if (rowIndex == 5)
+                {
+                    WordEntry entry = _solutionService.GetDefinition(word).Result;
+                    await Application.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!\n" + word + " (" + entry.PartOfSpeech + ")\n" + entry.Definition, "Play again");
+                    NewGame();
+                }
+
+                else
+                {
+                    rowIndex++;
+                    columnIndex = 0;
+                }
             }
+
+            
      
         }
 
         [RelayCommand]
         public void EnterLetter(char letter) 
         { 
-            if (letter == '>')
+            if (letter == '↵')
             {
                 Enter();
                 return;
             }
 
-            if (letter == '<')
+            if (letter == '⌫')
             {
                 if (columnIndex == 0)
                 {
@@ -137,20 +142,24 @@ namespace WordleClone.ViewModel
             columnIndex++;
         }
 
-        //private void NewGame()
-        //{
-        //    InitializeGame();
+        private void NewGame()
+        {
+            //InitializeGame();
 
-        //    for (int i = 0; i < rowIndex + 1; i++)
-        //    {
-        //        for (int j = 0; j < columnIndex; j++)
-        //        {
-        //            Rows[i].Letters[j].Input = ' ';
-        //            Rows[i].Letters[j].BackgroundColor = Colors.Gray;
-        //        }
+            GetSolution();
 
-        //    }
+            for (int i = 0; i < rowIndex + 1; i++)
+            {
+                for (int j = 0; j < columnIndex; j++)
+                {
+                    Rows[i].Letters[j].Input = ' ';
+                    Rows[i].Letters[j].Color = Colors.Black;
+                }
+            }
 
-        //}
+            rowIndex = 0;
+            columnIndex = 0;
+
+        }
     }
 }
