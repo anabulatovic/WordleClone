@@ -1,7 +1,5 @@
-﻿using Android.OS;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using WordleClone.Model;
-using static Android.Print.PrintAttributes;
 
 namespace WordleClone.Services
 {
@@ -46,7 +44,7 @@ namespace WordleClone.Services
             using (HttpClient client = new HttpClient())
             {
                 Uri uri = new Uri("https://api.dictionaryapi.dev/api/v2/entries/en/" + input);
-                HttpResponseMessage response = await client.GetAsync(uri);
+                HttpResponseMessage response = client.GetAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
                 if (response.IsSuccessStatusCode)
                 {
                     isValid = true;
