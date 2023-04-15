@@ -9,9 +9,6 @@ namespace WordleClone.Model
 {
     public partial class Letter : ObservableObject
     {
-        // private fields jer source generator ne moze izmeniti
-        // postojeci kod, vec samo dodati novi
-        // on ce dodati public fields
 
         public Letter() 
         {
