@@ -7,13 +7,30 @@
              x:DataType="viewmodel:GameViewModel"
              BackgroundColor="{DynamicResource Secondary}">
 
-    <Grid RowDefinitions="*, Auto"
+    <Grid RowDefinitions="25, 10, *, Auto"
           Padding="8, 12, 8, 12">
+
+        <Grid Grid.Row="0">
+            <Grid ColumnDefinitions="auto, *"/>
+            <Button Grid.Column="0" 
+                    x:Name="btnHelp" 
+                    HorizontalOptions="Start" 
+                    VerticalOptions="Center" 
+                    BackgroundColor="Transparent"
+                    Text="?"
+                    ImageSource="question.png"/>
+            <Label Grid.Column="1" 
+                   Text="Wordle Clone" 
+                   HorizontalOptions="Center" 
+                   FontSize="Large" 
+                   VerticalOptions="Center"/>
+        </Grid>
         
         <!---Game board-->
         <VerticalStackLayout
             Spacing="8"
-            BindableLayout.ItemsSource="{Binding Rows}">
+            BindableLayout.ItemsSource="{Binding Rows}"
+            Grid.Row="2">
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="model:Row">
                     <HorizontalStackLayout
@@ -38,7 +55,7 @@
         </VerticalStackLayout>
         
         <!---Keyboard-->
-        <VerticalStackLayout Grid.Row="1" Spacing="4">
+        <VerticalStackLayout Grid.Row="3" Spacing="4">
             <HorizontalStackLayout 
                         Spacing="2"
                         HorizontalOptions="Center"
