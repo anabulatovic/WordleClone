@@ -52,4 +52,10 @@
 	  <PackageReference Include="RestSharp" Version="110.2.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="View\HelpView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
