@@ -9,7 +9,8 @@ public static class MauiProgram
 	{
 		var builder = MauiApp.CreateBuilder();
 		builder.Services.AddSingleton<SolutionService>();
-		builder.Services.AddTransient<GameViewModel>();
+        builder.Services.AddSingleton<StatsViewModel>();
+        builder.Services.AddTransient<GameViewModel>();
 		//builder.Services.AddSingleton<HttpClient>();
 		builder
 			.UseMauiApp<App>()

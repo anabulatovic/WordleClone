@@ -14,14 +14,16 @@ namespace WordleClone.ViewModel
         private int columnIndex;
 
         private SolutionService _solutionService;
+        private StatsViewModel _statsViewModel;
 
         public char[] firstKeyboardRow { get; }
         public char[] secondKeyboardRow { get; }
         public char[] thirdKeyboardRow { get; }
 
-        public GameViewModel(SolutionService solutionService)
+        public GameViewModel(SolutionService solutionService, StatsViewModel statsViewModel)
         {
             _solutionService = solutionService;
+            _statsViewModel = statsViewModel;
 
             firstKeyboardRow = "QWERTYUIOP".ToCharArray();
             secondKeyboardRow = "ASDFGHJKL".ToCharArray();
@@ -88,6 +90,9 @@ namespace WordleClone.ViewModel
                     try
                     {
                         WordEntry entry = _solutionService.GetDefinition(word).Result;
+                        _statsViewModel.IncrementGamesWon();
+                        _statsViewModel.IncrementGamesPlayed();
+                        _statsViewModel.UpdateAverageAttempt(rowIndex + 1);
                         await Application.Current.MainPage.DisplayAlert("Congratulations", word + " (" + entry.PartOfSpeech + ")\n" + entry.Definition, "Play again", "Cancel");
                     }
 
@@ -113,7 +118,8 @@ namespace WordleClone.ViewModel
                     {
                         await Application.Current.MainPage.DisplayAlert("Game over!", "You have run out of turns!\n" + word + "\nWe currently do not have a definition for this word.", "OK");
                     }
-                    
+                    _statsViewModel.IncrementGamesPlayed();
+
                     NewGame();
                 }
 

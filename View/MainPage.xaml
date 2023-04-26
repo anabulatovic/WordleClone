@@ -2,28 +2,42 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WordleClone.MainPage"
+             Title="Wordle Clone"
              xmlns:viewmodel="clr-namespace:WordleClone.ViewModel"
              xmlns:model="clr-namespace:WordleClone.Model"
              x:DataType="viewmodel:GameViewModel"
-             BackgroundColor="{DynamicResource Secondary}">
+             BackgroundColor="{DynamicResource Secondary}"
+             NavigationPage.HasNavigationBar="False">
 
-    <Grid RowDefinitions="25, 10, *, Auto"
+    <Grid RowDefinitions="40, 10, *, Auto"
           Padding="8, 12, 8, 12">
 
         <Grid Grid.Row="0">
             <Grid ColumnDefinitions="auto, *"/>
+            <Grid RowDefinitions="auto, *"/>
             <Button Grid.Column="0" 
+                    Grid.Row="0"
                     x:Name="btnHelp" 
                     HorizontalOptions="Start" 
-                    VerticalOptions="Center" 
-                    BackgroundColor="Transparent"
-                    Text="?"
-                    ImageSource="question.png"/>
+                    VerticalOptions="Center"
+                    Text="?" 
+                    Clicked="btnHelp_Clicked"
+                    FontSize="Large"
+                    Padding="15,0,15,5"
+                    BackgroundColor="#6aaa64"/>
             <Label Grid.Column="1" 
                    Text="Wordle Clone" 
                    HorizontalOptions="Center" 
                    FontSize="Large" 
                    VerticalOptions="Center"/>
+            <Button Grid.Column="2"
+                    Grid.Row="0"
+                    x:Name="btnStats"
+                    Text="Statistics"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    Clicked="btnStats_Clicked"
+                    BackgroundColor="#c9b458"/>
         </Grid>
         
         <!---Game board-->

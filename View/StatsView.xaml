@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WordleClone.View.StatsView"
+             xmlns:viewmodel="clr-namespace:WordleClone.ViewModel"
+             Title="GAME STATISTICS"
+             x:DataType="viewmodel:StatsViewModel"
+             BackgroundColor="{DynamicResource Secondary}">
+    <StackLayout>
+        <Grid WidthRequest="200"
+              RowDefinitions="20, 40, 40, 40, 40, *"
+                ColumnDefinitions="100, 100">
+            <Label Grid.Row="1" Grid.Column="0"
+            Text="Games won: "
+            HorizontalOptions="Start" />
+            <Label Grid.Row="1" Grid.Column="1"
+            Text="{Binding GamesWon}"
+            TextColor="{DynamicResource Primary}"
+            HorizontalOptions="End"/>
+            <Label Grid.Row="2" Grid.Column="0"
+            Text="Games played: "
+            HorizontalOptions="Start" />
+            <Label Grid.Row="2" Grid.Column="1"
+            Text="{Binding GamesPlayed}"
+            TextColor="{DynamicResource Primary}"
+            HorizontalOptions="End"/>
+            <Label Grid.Row="3" Grid.Column="0"
+            Text="Average win attempts: "
+            HorizontalOptions="Start" />
+            <Label Grid.Row="3" Grid.Column="1"
+            Text="{Binding AverageAttemptOfSuccess}"
+            TextColor="{DynamicResource Primary}"
+            HorizontalOptions="End"/>
+            <Label Grid.Row="4" Grid.Column="0"
+            Text="Average win percentage: "
+            HorizontalOptions="Start" />
+            <Label Grid.Row="4" Grid.Column="1"
+            Text="{Binding GameWinPercentage}"
+            TextColor="{DynamicResource Primary}"
+            HorizontalOptions="End"/>
+        </Grid>
+    </StackLayout>
+</ContentPage>
